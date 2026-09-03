@@ -1,0 +1,15 @@
+{
+    "webhook_url": "https://discord.com/api/webhooks/1544715406730862632/YX5SpFjsqPVYc3QCdwysvmHLHxylPouPAaRPGIEg9T9S4kAo-GV5aLjUxF0tUoiOmP5T",
+    "user_id": "",
+    "ping_on_hit": true,
+    "workers": 250,
+    "theme": "neon",
+    "animate": true,
+    "mode": "Letters + Numbers",
+    "length": 4,
+    "random_dot": true,
+    "dot_at_end": false,
+    "request_delay_min": 1.0,
+    "request_delay_max": 2.0,
+    "generate_count": 0
+}
