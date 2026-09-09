@@ -403,14 +403,10 @@ def load_proxies(path: Path = PROXY_PATH) -> tuple[list[str], int]:
                 if line.startswith("http"):
                     proxies.append(line)
                     continue
-                parts = line.split(":")
-                if len(parts) == 2:
-                    host, port = parts
-                    proxies.append(f"http://{host}:{port}")
-                elif len(parts) == 4:
-                    host, port, user, password = parts
+                try:
+                    host, port, user, password = line.split(":", 3)
                     proxies.append(f"http://{user}:{password}@{host}:{port}")
-                else:
+                except ValueError:
                     skipped += 1
     except (OSError, UnicodeError):
         return [], 0
@@ -715,6 +711,8 @@ class DiscordUsernameChecker:
             self.stats.record("INVALID", username, reason)
             return
 
+        # Preserve the original rotating-residential behavior: choose once per username,
+        # use the same selection for that username's retries, and never test or prune it.
         proxy = random.choice(self.proxies) if self.proxies else None
         backoff = 1.0
 
@@ -852,6 +850,8 @@ class TerminalUI:
         return self.colors[name]
 
     def clear(self) -> None:
+        # No Live renderer is used for menus. A full clear + cursor home keeps
+        # nested pages from remaining visible in Windows Terminal/PowerShell.
         import os
         os.system("cls" if os.name == "nt" else "clear")
 
@@ -867,7 +867,7 @@ class TerminalUI:
         
         i = 0
         n = len(rendered)
-        delay = 0.005
+        delay = 0.005 # Medium paced (seconds per character)
         while i < n:
             if rendered[i] == '\x1b':
                 start = i
